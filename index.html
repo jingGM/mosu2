@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MOSU2: Long-range Navigation with Multi-modal Scene Understanding</title>
+<meta name="description" content="MOSU2 combines GPS route guidance, multi-modal traversability analysis and two-stage VLM reasoning grounded in a retrievable local map for long-range outdoor robot navigation.">
+<meta property="og:title" content="MOSU2: Long-range Navigation with Multi-modal Scene Understanding">
+<meta property="og:image" content="assets/fig1.jpg">
+<style>
+:root{--bg:#fff;--fg:#1d2330;--muted:#5b6475;--line:#e3e6ec;--accent:#8c1515;--card:#f6f7f9}
+@media(prefers-color-scheme:dark){:root{--bg:#14171d;--fg:#e8eaf0;--muted:#9aa3b5;--line:#2b303b;--accent:#ff8a8a;--card:#1c2029}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.65 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+main{max-width:960px;margin:0 auto;padding:0 20px 60px}
+header{text-align:center;padding:48px 0 24px}
+h1{font-size:clamp(1.8rem,4.5vw,2.8rem);line-height:1.2;margin:0 0 18px}
+h1 span{color:var(--accent)}
+.authors{margin:0;font-size:1.05rem}
+.authors sup,.aff sup{font-size:.7em}
+.aff{color:var(--muted);font-size:.95rem;margin:8px 0 0}
+.btns{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:22px}
+.btns a{padding:8px 18px;border-radius:999px;background:var(--fg);color:var(--bg);text-decoration:none;font-weight:600;font-size:.95rem}
+.btns a:hover{background:var(--accent);color:#fff}
+h2{font-size:1.6rem;margin:52px 0 14px;padding-bottom:6px;border-bottom:2px solid var(--line)}
+h3{margin:24px 0 6px;font-size:1.15rem}
+img,video{width:100%;height:auto;border-radius:8px;display:block}
+figure{margin:20px 0}
+figcaption{color:var(--muted);font-size:.9rem;margin-top:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 18px}
+.card b{color:var(--accent)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:20px 0}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;text-align:center}
+.stat .n{font-size:2rem;font-weight:700;color:var(--accent);line-height:1.1}
+.stat .l{font-size:.85rem;color:var(--muted)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.93rem;min-width:560px}
+th,td{padding:8px 10px;border-bottom:1px solid var(--line);text-align:center}
+th:first-child,td:first-child{text-align:left}
+thead th{border-bottom:2px solid var(--fg)}
+td.win{font-weight:700;color:var(--accent)}
+pre{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:14px;overflow-x:auto;font-size:.85rem}
+footer{text-align:center;color:var(--muted);font-size:.85rem;margin-top:48px}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1><span>MOSU2</span>: Long-range Navigation System with Multi-modal Scene Understanding</h1>
+  <p class="authors">Jing Liang<sup>1*</sup>, Zhenyu Hou<sup>2*</sup>, Senthurbavan Kirubaharan<sup>2</sup>, Md Safwan Mondal<sup>2</sup>, Ashok Gudivada<sup>2</sup>, Xuesu Xiao<sup>2</sup>, Michelle Q. Wang Baldonado<sup>1</sup>, Steve Cousins<sup>1</sup>, Dinesh Manocha<sup>3</sup></p>
+  <p class="aff"><sup>1</sup>Stanford University &nbsp; <sup>2</sup>George Mason University &nbsp; <sup>3</sup>University of Maryland, College Park &nbsp; · &nbsp; <sup>*</sup>equal contribution</p>
+  <div class="btns">
+    <a href="MOSU_Extension.pdf">📄 Paper (PDF)</a>
+    <a href="#video">🎬 Video</a>
+    <a href="https://github.com/jingGM/mosu2">💻 GitHub</a>
+  </div>
+</header>
+
+<section id="video">
+  <video controls preload="metadata" poster="assets/poster.jpg" playsinline>
+    <source src="mosu2_all_experiments.mp4" type="video/mp4">
+  </video>
+  <figcaption>All real-world experiments: stop gestures, construction sites, signalized crosswalks, shared roads and unsignalized roads.</figcaption>
+</section>
+
+<h2>Abstract</h2>
+<p>Reliable long-range outdoor navigation requires mobile robots to assess terrain traversability, interpret social and traffic context, and respond to the evolving behavior of surrounding road users. These requirements are tightly coupled at crossings and intersections, where the appropriateness of a trajectory depends on both contextual cues and road-user motion.</p>
+<p>Building on MOSU, we present <b>MOSU2</b>, an integrated navigation framework that combines route guidance, multi-modal traversability analysis, and motion-grounded contextual reasoning. It maintains a local map of tracked road users, and a two-stage multi-agent architecture first lets a <i>context agent</i> decide from RGB observations whether further investigation is needed; only then does a <i>decision agent</i> retrieve road-user states and select a trajectory. Grounding interpretations in measured motion supports decisions about approaching, stopping and yielding vehicles, traffic signals and pedestrian activity.</p>
+
+<figure>
+  <img src="assets/fig1.jpg" alt="MOSU2 overview across robot platforms and challenging scenarios" loading="lazy">
+  <figcaption>MOSU2 supports long-range navigation on wheeled-legged, wheeled and legged robots, handling terrain traversability (a–c) as well as social and traffic challenges such as pedestrians, pedestrian signals and vehicles that violate traffic rules (d–f).</figcaption>
+</figure>
+
+<h2>Contributions</h2>
+<div class="grid">
+  <div class="card"><b>Retrievable local map.</b> VLMs retrieve geometric and dynamic information from a local occupancy map and relate it to social and traffic cues in RGB images.</div>
+  <div class="card"><b>Two-stage reasoning.</b> A context agent screens routine scenes quickly; a decision agent is invoked only when more evidence is needed to pick a trajectory and velocity mode.</div>
+  <div class="card"><b>Built on MOSU.</b> Keeps GPS-based routing and geometric + semantic traversability, adding motion-grounded reasoning for yielding, stopping and signals.</div>
+</div>
+
+<h2>Method</h2>
+<figure>
+  <img src="assets/fig2.jpg" alt="MOSU2 architecture diagram" loading="lazy">
+  <figcaption>MOSU2 architecture: (a) GPS routing gives subgoals; (b) a CVAE generates candidate trajectories from LiDAR and velocity, while SAM 3 segmentation provides semantic traversability; (c) two-stage reasoning with a VLM-retrievable local map selects trajectory and velocity mode; (d) motion planners output (ν, ω).</figcaption>
+</figure>
+<h3>Routing</h3>
+<p>A public routing service yields GPS subgoals about 35 m apart, converted to the odometer frame and used as directional guidance rather than exact targets, so no prebuilt metric map is needed.</p>
+<h3>Trajectory generation and evaluation</h3>
+<p>A CVAE-based generator (MTG) produces multiple candidate trajectories covering traversable regions from LiDAR and robot velocity. RGB semantic segmentation adds robot-specific traversability, since geometry or color alone each fail in some scenes.</p>
+<h3>Two-stage trajectory selection</h3>
+<p><b>Stage 1</b> – the context agent screens the current RGB view with route guidance and trajectory assessments, supporting routine subgoal-directed navigation and flagging situations that need investigation.<br>
+<b>Stage 2</b> – the decision agent analyzes recent frames (5 frames over 2.5 s), retrieves geometric and dynamic layers (e.g. a vehicle's velocity) from the local map, and selects the trajectory and velocity mode, combined with geometric confidence, semantic traversability and progress to the subgoal.</p>
+
+<h2>Real-world Results</h2>
+<figure>
+  <img src="assets/fig8.jpg" alt="Evaluation scenarios" loading="lazy">
+  <figcaption>(a) Stop gesture, (b) construction area, (c) signalized crossing, (d) sharing the road with a cyclist, (e) car whose speed determines whether it yields, (f) unsignalized road baseline.</figcaption>
+</figure>
+<div class="stats">
+  <div class="stat"><div class="n">41% → 93%</div><div class="l">mean navigation success, MOSU → MOSU2</div></div>
+  <div class="stat"><div class="n">58% → 91%</div><div class="l">mean condition-detection accuracy</div></div>
+  <div class="stat"><div class="n">0% → 100%</div><div class="l">success at signalized crosswalks</div></div>
+  <div class="stat"><div class="n">1.7 → 4.8 s</div><div class="l">mean reasoning latency (trade-off)</div></div>
+</div>
+<div class="tw"><table>
+<thead><tr><th rowspan="2">Scenario</th><th colspan="3">MOSU</th><th colspan="3">MOSU2</th></tr>
+<tr><th>Nav. success %</th><th>Latency s</th><th>Det. acc. %</th><th>Nav. success %</th><th>Latency s</th><th>Det. acc. %</th></tr></thead>
+<tbody>
+<tr><td>Stop gesture</td><td>0</td><td>1.61</td><td>0</td><td class="win">67</td><td>3.52</td><td class="win">89</td></tr>
+<tr><td>Construction site</td><td>50</td><td>1.68</td><td>100</td><td class="win">100</td><td>5.16</td><td>100</td></tr>
+<tr><td>Signalized crosswalk</td><td>0</td><td>1.90</td><td>41</td><td class="win">100</td><td>4.72</td><td class="win">93</td></tr>
+<tr><td>Road + vehicles/bikes/peds</td><td>56</td><td>1.785</td><td>50</td><td class="win">100</td><td>4.95</td><td class="win">89</td></tr>
+<tr><td>Unsignalized road</td><td>100</td><td>1.74</td><td>100</td><td>100</td><td>5.75</td><td>86</td></tr>
+</tbody></table></div>
+<p style="color:var(--muted);font-size:.9rem">MOSU2 detects relevant conditions grounded in measured motion, avoiding both overly conservative stops and premature entry, at the cost of higher latency from multi-frame analysis and map retrieval.</p>
+
+<h3>Inherited MOSU traversability (GND dataset)</h3>
+<div class="tw"><table>
+<thead><tr><th>Method</th><th>Modality</th><th>Traversability % ↑</th><th>Distance to target % ↑</th><th>Inference s ↓</th></tr></thead>
+<tbody>
+<tr><td>PIVOT</td><td>RGB + Language</td><td>70</td><td>69</td><td>2.30</td></tr>
+<tr><td>ViNT</td><td>RGB</td><td>57</td><td>62</td><td>0.69</td></tr>
+<tr><td>NoMaD</td><td>RGB</td><td>59</td><td>61</td><td>0.24</td></tr>
+<tr><td>MTG</td><td>Points</td><td>61</td><td>64</td><td>0.01</td></tr>
+<tr><td>DTG</td><td>Points</td><td>67</td><td>66</td><td>0.13</td></tr>
+<tr><td>VL-TGS</td><td>Points, RGB, Language</td><td>65</td><td>70</td><td>2.31</td></tr>
+<tr><td><b>MOSU</b></td><td>Points, RGB, Language</td><td class="win">77</td><td class="win">73</td><td>2.30</td></tr>
+</tbody></table></div>
+
+<h2>Limitations</h2>
+<p>Performance depends on the quality of geometric, semantic and dynamic observations (occlusion, sparse LiDAR, association errors) and on the first stage recognizing when to escalate. Reasoning latency of up to 5.75 s means the scene may change before a decision executes. Future work: uncertainty-aware escalation, lightweight screening models, more robust temporal association and adaptive candidate generation.</p>
+
+<h2>BibTeX</h2>
+<pre>@article{liang2026mosu2,
+  title   = {MOSU2: Long-range Navigation System with Multi-modal Scene Understanding},
+  author  = {Liang, Jing and Hou, Zhenyu and Kirubaharan, Senthurbavan and Mondal, Md Safwan and Gudivada, Ashok and Xiao, Xuesu and Baldonado, Michelle Q. Wang and Cousins, Steve and Manocha, Dinesh},
+  year    = {2026}
+}</pre>
+
+<footer>Contact: <a href="mailto:jinglms@stanford.edu">jinglms@stanford.edu</a> · Code and site: <a href="https://github.com/jingGM/mosu2">github.com/jingGM/mosu2</a></footer>
+</main>
+</body>
+</html>
